@@ -1,0 +1,40 @@
+@import '_base.scss';
+
+.sidebar {
+    background-color: $main-bg;
+    min-height: 100vh;
+    color: white;
+    padding: 32px;
+    margin: 0;
+
+    &--main-icon {
+      margin: 32px 0;
+      color: $primary-lighter;
+    }
+    &--form-wrap {
+      text-align: left;
+      padding: 16px;
+    }    
+    &--option-title {
+      text-transform: uppercase;
+      font-family: Oswald;
+      font-weight: 00;
+      font-size: 18px;
+      margin: 16px 0px 8px 0px;
+    }
+
+    &--option-label {
+      margin: 0;
+      justify-self: center;
+
+      &--active {
+        margin: 0;
+        color: $primary-lighter;
+      }
+    }
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  border-color: $primary-lighter;
+  background-color: $primary-lighter;
+}

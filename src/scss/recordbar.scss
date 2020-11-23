@@ -1,0 +1,18 @@
+@import './base.scss';
+
+.record-bar {
+  min-height: 10vh;
+  align-self: flex-end;
+  background-color: $ash-gray;
+  bottom: 0;
+  padding: 16px;
+
+  &--wrap {
+    align-content: center;
+    display: inline-flex;
+  }
+
+  &--player {
+    width: 100%;
+  }
+}
