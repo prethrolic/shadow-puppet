@@ -1,72 +1,74 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
-import { Row, Col, Form } from 'react-bootstrap'
+import { Col} from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCogs} from '@fortawesome/free-solid-svg-icons'
-import '../scss/sidebar.scss';
+import { faHatWizard, faQuidditch, faChevronRight, faChevronCircleRight, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import '../scss/sidebar.scss'
 
-library.add(faCogs);
+library.add(faHatWizard, faQuidditch, faChevronRight, faChevronCircleRight, faSyncAlt);
 
 
 class Sidebar extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-        show: this.props.show,
-        strictness: true,
+        icon: this.props.icon || 'quidditch',
+        name: this.props.name || "Harry Potter",
+        quote: this.props.quote,
+        selectedQuote: this.props.selectedQuote || 0,
+        onQuoteChanged: this.props.onQuoteChanged,
+        onCharacterChanged: this.props.onCharacterChanged,
     }
-
-    this.handleStrictness = this.handleStrictness.bind(this);
   }
 
-  handleStrictness(e) {
-    const strictness = (e.target.value === "exact") ? true:false;
-    this.setState({ strictness: strictness });
+  componentDidUpdate = (prevProps) => {
+    if (prevProps !== this.props) {
+      this.setState({
+        icon: this.props.icon || 'quidditch',
+        name: this.props.name || "Harry Potter",
+        quote: this.props.quote,
+        selectedQuote: this.props.selectedQuote || 0,
+      })
+    }
   }
 
   render() {
-      if (this.state.show) {
-        return(
-            <Col md={3} className="sidebar">
-              <FontAwesomeIcon
-              className="sidebar--main-icon"
-                icon="cogs" size="6x" 
-              />
-              <Form className="sidebar--form-wrap">
-                <div>
-                  <Form.Group>
-                    <div>
-                      <Form.Label className="sidebar--option-title">strictness</Form.Label>
-                    </div>
-                    <div key="custom-radio" className="mb-3">
-                      <Form.Check custom inline id="custom-radio-1">
-                        <Form.Check.Input 
-                          type="radio" name="strictness" value="exact"
-                          checked={this.state.strictness} 
-                          onChange={this.handleStrictness} />
-                        <Form.Check.Label
-                          bsPrefix= {this.state.strictness ? "sidebar--option-label--active" : "sidebar--option-label"}>
-                          exact match
-                        </Form.Check.Label>
-                      </Form.Check>
-                      <Form.Check custom inline id="custom-radio-2">
-                        <Form.Check.Input 
-                          type="radio" name="strictness" value="pronunciation"
-                          checked={!this.state.strictness}
-                          onChange={this.handleStrictness} />
-                        <Form.Check.Label
-                          bsPrefix={this.state.strictness ? "sidebar--option-label" : "sidebar--option-label--active"}>
-                          word pronunciation
-                        </Form.Check.Label>
-                      </Form.Check>
-                    </div>
-                  </Form.Group>
-                </div>
-              </Form>
-            </Col>
-        );
-      }
-      else return null;
+    return(
+        <Col md={3} className="sidebar">
+          <FontAwesomeIcon
+          className="sidebar--main-icon"
+            icon={this.state.icon} size="6x" 
+          />
+          <div className="sidebar--name">
+            { this.state.name }
+          </div>
+          <div className="sidebar--submenu-wrap">
+            { this.props.quote ?
+              this.props.quote.map((quoteEntry, idx) => {
+                return(
+                  <div 
+                    className={"sidebar--submenu-item " + (this.state.selectedQuote === idx ? "active" : "inactive") }
+                    value={idx}
+                    onClick={() => this.state.onQuoteChanged(idx)}
+                  >
+                    { this.state.selectedQuote === idx ? 
+                      <FontAwesomeIcon className="sidebar--submenu-icon active" icon="chevron-circle-right" /> 
+                      : <FontAwesomeIcon className="sidebar--submenu-icon inactive" icon="chevron-right" size="xs" />
+                    }
+                    <strong style={{fontFamily: "Oswald", textTransform: "uppercase"}}> Quote {idx+1} :</strong> {quoteEntry.script.join(" ")}
+                  </div>
+                )
+              })
+              :
+              null
+            }
+          </div>
+          <div className="sidebar--alt-character" onClick={this.state.onCharacterChanged}>
+            <FontAwesomeIcon className="sidebar--alt-character---icon" icon="sync-alt" />
+            change character
+          </div>
+        </Col>
+    );
   }
 }
 

@@ -8,30 +8,81 @@
     margin: 0;
 
     &--main-icon {
-      margin: 32px 0;
+      margin-top: 16px;
       color: $primary-lighter;
     }
-    &--form-wrap {
-      text-align: left;
-      padding: 16px;
-    }    
-    &--option-title {
-      text-transform: uppercase;
+    
+    &--name {
       font-family: Oswald;
-      font-weight: 00;
-      font-size: 18px;
-      margin: 16px 0px 8px 0px;
+      font-weight: 600;
+      font-size: 24px;
+      color: $primary-lighter;
+      margin: 16px;
     }
 
-    &--option-label {
-      margin: 0;
-      justify-self: center;
+    &--submenu-wrap {
+      margin: 48px -32px;
+      padding: 0;
+    }
 
-      &--active {
-        margin: 0;
-        color: $primary-lighter;
+    &--submenu-icon {
+      margin-right: 4px;
+
+      &.inactive {
+        margin-right: 8px;
+        margin-bottom: 2px;
       }
     }
+
+    &--submenu-item {
+      padding: 8px 24px 8px 36px;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+
+      &.active {
+        height: 60px;
+        font-size: 18px;
+        line-height: 40px;
+        background-color: $ash-gray;
+        color: $primary-darker;
+        font-weight: 600;
+      }
+
+      &.inactive {
+        height: 48px;
+        line-height: 28px;
+        color: $primary-lighter;
+
+        &:hover {
+          color: white;
+          font-weight: 600;
+          transition: 0.3s ease-in-out;
+        }
+      }
+    }
+
+  &--alt-character {
+    position: absolute;
+    bottom: 0;
+    font-family: Oswald;
+    font-size: 18px;
+    color: $ash-gray;
+    padding: 0 0 48px 8px;
+    text-align: left;
+    cursor: pointer;
+    
+    &:hover {
+      color: white;
+      transition: 0.3s ease-in-out;
+    }
+    &---icon {
+      margin-right: 8px;
+    }
+  }
 }
 
 .custom-control-input:checked~.custom-control-label::before {

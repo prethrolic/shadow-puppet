@@ -1,18 +1,45 @@
 @import './base.scss';
 
 .record-bar {
-  min-height: 10vh;
-  align-self: flex-end;
   background-color: $ash-gray;
-  bottom: 0;
   padding: 16px;
+  margin-left: -15px;
 
   &--wrap {
     align-content: center;
-    display: inline-flex;
   }
 
   &--player {
-    width: 100%;
+    width: 500px;
+    height: 32px;
+    margin-top: 6px;
+  }
+
+  &--round-button {
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    background: white;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 100%;
+    
+
+    &.inactive {
+      border-color: $primary;
+      color: $primary;
+    }
+
+    &.active {
+      border-color: $accent;
+      color: $accent;
+      animation: pulse-accent 2s infinite;
+    }
+
+    &.loading {
+      border-color: $ash-gray;
+      color: $ash-gray;
+    }
+
   }
 }

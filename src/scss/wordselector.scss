@@ -1,0 +1,30 @@
+@import './base.scss';
+
+.word-selector {
+  &--wrap {
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+
+  &--container {
+    display: inline-block;
+    padding: 0;
+    margin: 6px;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
+    background-color: none;
+    cursor: pointer;
+
+    &.active {
+      color: $primary-darker;
+      border-bottom: 2px dashed $primary-darker;
+    }
+
+    &.inactive {
+      color: $fade;
+      border-bottom: 2px dashed $fade;
+    }
+
+  }
+}
