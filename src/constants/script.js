@@ -16,7 +16,7 @@ export const MOVIE_SCRIPT = {
         video_url: 'https://drive.google.com/file/d/1IXJnbUlN90mT6pnVp7X2_XHYy-ZCJF9Y/preview',
       },
       {
-        script: ["Look,", "Hagrid's", "our", "friend.", "Why", "don't", "we", "just", "go", "and", "ask", "him", "about", "it"],
+        script: ["Look,", "Hagrid's", "our", "friend.", "Why", "don't", "we", "just", "go", "and", "ask", "him", "about", "it?"],
         video_url: 'https://drive.google.com/file/d/1_NYZkHOGrHJ00LLw8kePhSmQxG9m8hfA/preview',
       },
       {
@@ -30,7 +30,7 @@ export const MOVIE_SCRIPT = {
     icon: "quidditch",
     quote: [
       {
-        script: ["I'll", "be", "in", "my", "bedroom", "making", "no", "noise", "and", "pretend", "that", "I", "don't", "exist"],
+        script: ["I'll", "be", "in", "my", "bedroom", "making", "no", "noise", "and", "pretending", "that", "I", "don't", "exist"],
         video_url: 'https://drive.google.com/file/d/1CJEIjDvPgR9NAPUVDdR8uFnsaSGmTG8Y/preview',
       },
       {
@@ -46,7 +46,7 @@ export const MOVIE_SCRIPT = {
         video_url: 'https://drive.google.com/file/d/1hAQhrj6DLY6_DCCKc7EZedPCfYkdLXVt/preview',
       },
       {
-        script: ["Don't", "worry.", "Ginny.", "You", "need", "to", "get", "your", "self", "out.", "Follow", "the", "chamber", "and", "you'll", "find", "Ron"],
+        script: ["Don't", "worry.", "Ginny.", "You", "need", "to", "get", "yourself", "out.", "Follow", "the", "chamber", "and", "you'll", "find", "Ron"],
         video_url: 'https://drive.google.com/file/d/1YHsou3JLQDhR07iMK1dtw9wcriqf4CKr/preview',
       },
     ]
