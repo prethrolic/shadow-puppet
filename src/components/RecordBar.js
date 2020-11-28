@@ -48,7 +48,7 @@ class RecordBar extends React.Component {
     const user = {
       username: name
     };
-    axios.post('http://localhost:3002/score', {user}).then(
+    axios.post('https://143.248.150.127:8080/score', {user}).then(
       res => this.setState({score: res.data.username})
       );
 

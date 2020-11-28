@@ -12,8 +12,20 @@ app.use(bodyParser.json());
 app.use('/score', function(req, res){
   const pythonProcess = spawn('python',["./score.py", req.body.user.username]);
   pythonProcess.stdout.on('data', function(data) {
-    res.send({username :data.toString()});  
+    res.send({username: data.toString()});  
   })
 });
 
-app.listen(port, () => console.log(`listening on port ${port}!`));
+//app.listen(port, () => console.log(`listening on port ${port}!`));
+app.listen(port);
+
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
+https.createServer(options, app).listen(8080);
+console.log(`listening on port ${port}!`);
