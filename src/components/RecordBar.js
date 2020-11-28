@@ -48,45 +48,39 @@ class RecordBar extends React.Component {
     return(
       <div className="record-bar">
         <WordSelector quote={this.state.quote.script} selectedIndices={this.state.selectedIndices} onSelectedWordChanged={this.onSelectedWordChanged} />
-        <Row className="justify-content-md-center">
+        <div className="justify-content-md-center">
           <ReactMediaRecorder
             audio
             render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
               <div className="record-bar--wrap">
-                <Row className="justify-content-md-center align-items-center">
-                  <Col>
-                    {
-                      status === "recording" ? 
-                        <Button
-                          bsPrefix="record-bar--round-button active"
-                          onClick={() => {stopRecording(); this.getEvaluation()}}
-                        >
-                            <FontAwesomeIcon icon="microphone" size="lg" />
-                        </Button>
-                        :
-                        status === "stopping" ?
-                        <Button
-                          bsPrefix="record-bar--round-button loading"
-                        >
-                            <FontAwesomeIcon icon="circle-notch" size="lg" spin />
-                        </Button>
-                        :
-                        <Button
-                          bsPrefix="record-bar--round-button inactive"
-                          onClick={startRecording}
-                        >
-                            <FontAwesomeIcon icon="microphone" size="lg" />
-                        </Button>
-                    }
-                  </Col>
-                  <Col>
-                    <audio className="record-bar--player" src={mediaBlobUrl} controls />
-                  </Col>
-                </Row>
+                  {
+                    status === "recording" ? 
+                      <Button
+                        bsPrefix="record-bar--round-button active"
+                        onClick={() => {stopRecording(); this.getEvaluation()}}
+                      >
+                          <FontAwesomeIcon icon="microphone" size="lg" />
+                      </Button>
+                      :
+                      status === "stopping" ?
+                      <Button
+                        bsPrefix="record-bar--round-button loading"
+                      >
+                          <FontAwesomeIcon icon="circle-notch" size="lg" spin />
+                      </Button>
+                      :
+                      <Button
+                        bsPrefix="record-bar--round-button inactive"
+                        onClick={startRecording}
+                      >
+                          <FontAwesomeIcon icon="microphone" size="lg" />
+                      </Button>
+                  }
+                  <audio className="record-bar--player" src={mediaBlobUrl} controls />
               </div>
             )}
           />
-        </Row>
+        </div>
       </div>
     );
   }
