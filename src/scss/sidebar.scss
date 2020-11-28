@@ -2,13 +2,13 @@
 
 .sidebar {
     background-color: $main-bg;
-    min-height: 100vh;
+    height: 100vh;
     color: white;
-    padding: 32px;
+    padding: 16px 0;
     margin: 0;
 
     &--main-icon {
-      margin-top: 16px;
+      margin-top: 48px;
       color: $primary-lighter;
     }
     
@@ -21,7 +21,7 @@
     }
 
     &--submenu-wrap {
-      margin: 48px -32px;
+      margin: 48px 0;
       padding: 0;
     }
 
@@ -35,13 +35,14 @@
     }
 
     &--submenu-item {
-      padding: 8px 24px 8px 36px;
+      padding: 8px 24px;
       vertical-align: middle;
+      text-align: left;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      cursor: pointer;
       transition: 0.2s ease-in-out;
+      cursor: pointer;
 
       &.active {
         height: 60px;
@@ -71,7 +72,7 @@
     font-family: Oswald;
     font-size: 18px;
     color: $ash-gray;
-    padding: 0 0 48px 8px;
+    padding: 0 0 48px 24px;
     text-align: left;
     cursor: pointer;
     

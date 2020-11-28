@@ -2,17 +2,17 @@
 
 .record-bar {
   background-color: $ash-gray;
-  padding: 16px;
-  margin-left: -15px;
+  padding: 16px 16px 32px 16px;
 
   &--wrap {
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &--player {
     width: 500px;
     height: 32px;
-    margin-top: 6px;
   }
 
   &--round-button {
@@ -23,6 +23,7 @@
     border-width: 2px;
     border-style: solid;
     border-radius: 100%;
+    margin-right: 32px;
     
 
     &.inactive {
@@ -41,5 +42,21 @@
       color: $ash-gray;
     }
 
+  }
+}
+
+@media (max-width: 1024px){
+  .record-bar {
+    &--player {
+      width: 400px;
+    }
+  }
+}
+
+@media (max-width: 768px){
+  .record-bar {
+    &--player {
+      width: 60vw;
+    }
   }
 }

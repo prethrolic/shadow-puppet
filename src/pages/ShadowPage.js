@@ -50,9 +50,11 @@ class ShadowPage extends React.Component {
             onQuoteChanged={this.onQuoteChanged}
             onCharacterChanged={this.onCharacterChanged}
           />
-          <Col style={{ display: "flex", flexDirection: "column" }}>
-            <VideoPlayer videoUrl={this.state.character.quote[this.state.selectedQuote].video_url} />
-            <RecordBar quote={this.state.character.quote[this.state.selectedQuote]} />
+          <Col>
+            <Row style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+              <VideoPlayer videoUrl={this.state.character.quote[this.state.selectedQuote].video_url} />
+              <RecordBar quote={this.state.character.quote[this.state.selectedQuote]} />
+            </Row>
           </Col>
         </Row>
       </Container>
