@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMicrophone, faCircleNotch} from '@fortawesome/free-solid-svg-icons'
 import '../scss/recordbar.scss'
+import axios from 'axios'
 
 
 library.add(faMicrophone, faCircleNotch);
@@ -17,6 +18,7 @@ class RecordBar extends React.Component {
     this.state = {
       quote: this.props.quote,
       selectedIndices: this.props.quote.script.map((_, idx) => idx),
+      score: "Score",
     }
 
     this.onSelectedWordChanged = this.onSelectedWordChanged.bind(this)
@@ -38,10 +40,18 @@ class RecordBar extends React.Component {
     // this.getEvaluation()
   }
 
-  getEvaluation = () => {
+  getEvaluation = (name) => {
     // TODO: 
     //    1. implement audio upload
     //    2. return evaluation and set states
+
+    const user = {
+      username: name
+    };
+    axios.post('http://localhost:3002/score', {user}).then(
+      res => this.setState({score: res.data.username})
+      );
+
   }
 
   render() {
@@ -57,7 +67,7 @@ class RecordBar extends React.Component {
                     status === "recording" ? 
                       <Button
                         bsPrefix="record-bar--round-button active"
-                        onClick={() => {stopRecording(); this.getEvaluation()}}
+                        onClick={() => {stopRecording()}}
                       >
                           <FontAwesomeIcon icon="microphone" size="lg" />
                       </Button>
@@ -77,6 +87,9 @@ class RecordBar extends React.Component {
                       </Button>
                   }
                   <audio className="record-bar--player" src={mediaBlobUrl} controls />
+                  <Button onClick={() => {this.getEvaluation("jyp")}}>
+                    {this.state.score}
+                  </Button>
               </div>
             )}
           />
