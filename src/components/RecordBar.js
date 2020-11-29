@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMicrophone, faCircleNotch} from '@fortawesome/free-solid-svg-icons'
 import '../scss/recordbar.scss'
-import axios from 'axios'
+//import axios from 'axios'
+const axios = require('axios').default;
 
 
 library.add(faMicrophone, faCircleNotch);
@@ -40,17 +41,37 @@ class RecordBar extends React.Component {
     // this.getEvaluation()
   }
 
-  getEvaluation = (name) => {
+  getEvaluation = (name, url) => {
     // TODO: 
     //    1. implement audio upload
     //    2. return evaluation and set states
 
-    const user = {
-      username: name
-    };
-    axios.post('https://143.248.150.127:8080/score', {user}).then(
-      res => this.setState({score: res.data.username})
-      );
+    if (this.state.audio != null) {
+        //load blob
+        var xhr_get_audio = new XMLHttpRequest();
+        xhr_get_audio.open('GET', url, true);
+        xhr_get_audio.responseType = 'blob';
+        xhr_get_audio.onload = function(e) {
+            if (this.status == 200) {
+                var blob = this.response;
+                //send the blob to the server
+                var xhr_send = new XMLHttpRequest();
+                var filename = "filename0" 
+                var fd = new FormData();
+                fd.set("username", name);
+                fd.append("audio_data", blob, filename);
+console.log(blob)
+console.log(fd.get("audio_data"))
+                console.log(fd.get("username"));
+                axios.post('https://143.248.150.127:8080/score', fd)/*, {
+                  /*headers: {'Content-Type': 'multipart/form-data'}*/
+                .then(
+                  res => this.setState({score: res.data.username})
+                  );
+            }
+        };
+        xhr_get_audio.send();
+    }
 
   }
 
@@ -61,6 +82,7 @@ class RecordBar extends React.Component {
         <div className="justify-content-md-center">
           <ReactMediaRecorder
             audio
+            onStop = {mediaBlobUrl => this.setState({audio: mediaBlobUrl}) }
             render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
               <div className="record-bar--wrap">
                   {
@@ -87,7 +109,7 @@ class RecordBar extends React.Component {
                       </Button>
                   }
                   <audio className="record-bar--player" src={mediaBlobUrl} controls />
-                  <Button onClick={() => {this.getEvaluation("jyp")}}>
+                  <Button onClick={() => {this.getEvaluation("jyp", mediaBlobUrl)}}>
                     {this.state.score}
                   </Button>
               </div>

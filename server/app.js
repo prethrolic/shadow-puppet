@@ -10,10 +10,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/score', function(req, res){
-  const pythonProcess = spawn('python',["./score.py", req.body.user.username]);
+/*  const pythonProcess = spawn('python3',["./score.py", req.body.user.username, req.body.user.url]);
   pythonProcess.stdout.on('data', function(data) {
     res.send({username: data.toString()});  
-  })
+  })*/
+  console.log(req.body);
 });
 
 //app.listen(port, () => console.log(`listening on port ${port}!`));
