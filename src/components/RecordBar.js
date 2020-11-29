@@ -19,6 +19,8 @@ class RecordBar extends React.Component {
       quote: this.props.quote,
       selectedIndices: this.props.quote.script.map((_, idx) => idx),
       score: "Score",
+      selectedCharacter: this.props.selectedCharacter,
+      selectedQuote: this.props.selectedQuote,
     }
 
     this.onSelectedWordChanged = this.onSelectedWordChanged.bind(this)
@@ -59,7 +61,8 @@ class RecordBar extends React.Component {
                 var fd = new FormData();
                 fd.set("username", name);
                 fd.append("audio_data", blob, filename);
-                console.log(fd.get("username"));
+                fd.append("character", par.props.selectedCharacter)
+                fd.append("quote", par.props.selectedQuote)
                 axios.post('https://143.248.150.127:8080/score', 
                             fd, 
                 {headers: {'Content-Type': 'multipart/form-data'}})

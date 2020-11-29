@@ -53,7 +53,7 @@ class ShadowPage extends React.Component {
           <Col>
             <Row style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
               <VideoPlayer videoUrl={this.state.character.quote[this.state.selectedQuote].video_url} />
-              <RecordBar quote={this.state.character.quote[this.state.selectedQuote]} />
+              <RecordBar quote={this.state.character.quote[this.state.selectedQuote]} selectedCharacter={this.state.selectedCharacter} selectedQuote={this.state.selectedQuote} />
             </Row>
           </Col>
         </Row>
