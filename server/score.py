@@ -1,12 +1,24 @@
+import socket
+import os
 import sys
+import pickle
+import warnings
+warnings.filterwarnings('ignore')
 
-def main():
-  username = sys.argv[1]
-  path = sys.argv[2] #path to audio file
-  truth =sys.argv[3] #path to movie audio
-  print (truth)
-  sys.stdout.flush()
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect("/tmp/shadow_socket")
 
-if __name__ == '__main__':
-  main()
+f1 = './movie/'+sys.argv[3]
+f2 = sys.argv[2]
+w = [0, 1, 7]
+w = pickle.dumps(w)
 
+send_msg = '{} {}'.format(f1, f2).encode('UTF-8')
+s.send(send_msg)
+s.recv(1024)
+s.send(w)
+score = s.recv(1024).decode('UTF-8')
+s.close()
+	
+print(score)
+sys.stdout.flush()
