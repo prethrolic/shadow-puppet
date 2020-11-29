@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 s.connect("/tmp/shadow_socket")
 
-f1 = './movie/'+sys.argv[3]
+f1 = 'movie/'+sys.argv[3]
 f2 = sys.argv[2]
 w = sys.argv[4].split("-")
 w = pickle.dumps(w)

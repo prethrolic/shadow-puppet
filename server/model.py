@@ -6,6 +6,7 @@ import numpy as np
 import socket
 import os
 import sys
+import subprocess
 import pickle
 import warnings
 warnings.filterwarnings('ignore')
@@ -107,7 +108,29 @@ with torch.no_grad():
 		words = conn.recv(1024)
 		words = pickle.loads(words)
 
-		x1, x2 = get_audio_cnn(f1, f2)
+
+		mv_csv = f1[:-4]+'.csv'
+		f = open(mv_csv, 'r')
+		mv_w = f.readlines()
+		mv_w = [float(pair.strip().split(',')[-1]) for pair in mv_w]
+
+		if len(words) != len(mv_w)-1:
+			ext = '_'.join(str(x) for x in words)
+			mv_dir = f1[:-4].split("/")[0]
+			mv_name = f1[:-4].split("/")[-1]
+			new_f1 = "{}/cuts/{}_{}.wav".format(mv_dir,mv_name,ext)
+			if not os.path.exists(new_f1):
+				mute_list = ""
+				for i, t in enumerate(mv_w[:-1]):
+					if not i in words:
+						if len(mute_list) > 0:
+							mute_list += ", "
+						mute_list += "volume=enable='between(t,{},{})':volume=0".format(t,mv_w[i+1])
+
+				subprocess.call(['ffmpeg', '-i', f1, '-af', mute_list, '-c:v', 'copy', new_f1, '-y', '-hide_banner'])
+		print(new_f1)
+
+		x1, x2 = get_audio_cnn(new_f1, f2)
 		x1, x2 = torch.from_numpy(x1).unsqueeze(0).to(device).float(), torch.from_numpy(x2).unsqueeze(0).to(device).float()
 
 		y_hat = model(x1, x2)
