@@ -32,7 +32,7 @@ class RecordBar extends React.Component {
       this.setState({
         quote: this.props.quote,
         selectedIndices: this.props.quote.script.map((_, idx) => idx),
-      })
+      });
     }
   }
 
@@ -59,7 +59,9 @@ class RecordBar extends React.Component {
                 //send the blob to the server
                 var filename = "filename0" 
                 var fd = new FormData();
-                fd.set("username", name);
+                var indices = par.state.selectedIndices.join("-");
+                fd.append("username", name);
+                fd.append("words", indices);
                 fd.append("audio_data", blob, filename);
                 fd.append("character", par.props.selectedCharacter)
                 fd.append("quote", par.props.selectedQuote)

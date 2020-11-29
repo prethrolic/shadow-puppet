@@ -28,7 +28,8 @@ app.use('/score', upload.single("audio_data"), function(req, res){
   const character = parseInt(req.body.character, 10)==0?"f":"m";
   const quote = parseInt(req.body.quote,10)+1;
   const truth = character + quote+ ".wav";
-  const pythonProcess = spawn('python3',["./score.py", req.body.username, req.file.path, truth]);
+  const words = req.body.words; 
+  const pythonProcess = spawn('python3',["./score.py", req.body.username, req.file.path, truth, words]);
   pythonProcess.stdout.on('data', function(data) {
     res.send({username: data.toString()});  
   })

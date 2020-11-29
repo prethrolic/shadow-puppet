@@ -10,7 +10,7 @@ s.connect("/tmp/shadow_socket")
 
 f1 = './movie/'+sys.argv[3]
 f2 = sys.argv[2]
-w = [0, 1, 7]
+w = sys.argv[4].split("-")
 w = pickle.dumps(w)
 
 send_msg = '{} {}'.format(f1, f2).encode('UTF-8')
