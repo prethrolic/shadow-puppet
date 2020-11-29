@@ -1,4 +1,11 @@
 import sys
 
-print (sys.argv[1]+"ysl")
-sys.stdout.flush()
+def main():
+  username = sys.argv[1]
+  path = sys.argv[2] #path to audio file
+  print (username)
+  sys.stdout.flush()
+
+if __name__ == '__main__':
+  main()
+
