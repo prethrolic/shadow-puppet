@@ -42,7 +42,7 @@ class RecordBar extends React.Component {
     // this.getEvaluation()
   }
 
-  getEvaluation = (name, url) => {
+  getEvaluation = (url) => {
     // TODO: 
     //    1. implement audio upload
     //    2. return evaluation and set states
@@ -60,16 +60,15 @@ class RecordBar extends React.Component {
                 var filename = "filename0" 
                 var fd = new FormData();
                 var indices = par.state.selectedIndices.join("-");
-                fd.append("username", name);
                 fd.append("words", indices);
                 fd.append("audio_data", blob, filename);
-                fd.append("character", par.props.selectedCharacter)
-                fd.append("quote", par.props.selectedQuote)
+                fd.append("character", par.props.selectedCharacter);
+                fd.append("quote", par.props.selectedQuote);
                 axios.post('https://143.248.150.127:8080/score', 
                             fd, 
                 {headers: {'Content-Type': 'multipart/form-data'}})
                 .then(
-                  res => par.setState({score: res.data.username})
+                  res => par.setState({score: res.data.score})
                 );
             }
         };
@@ -112,7 +111,7 @@ class RecordBar extends React.Component {
                       </Button>
                   }
                   <audio className="record-bar--player" src={mediaBlobUrl} controls />
-                  <Button onClick={() => {this.getEvaluation("jyp", mediaBlobUrl)}}>
+                  <Button onClick={() => {this.getEvaluation(mediaBlobUrl)}}>
                     {this.state.score}
                   </Button>
               </div>

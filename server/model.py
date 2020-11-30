@@ -112,30 +112,62 @@ with torch.no_grad():
 		mv_csv = f1[:-4]+'.csv'
 		f = open(mv_csv, 'r')
 		mv_w = f.readlines()
-		mv_w = [float(pair.strip().split(',')[-1]) for pair in mv_w]
+		mv_words = [pair.strip().split(',')[0] for pair in mv_w][:-1]
+		mv_time = [float(pair.strip().split(',')[-1]) for pair in mv_w]
 
-		if len(words) != len(mv_w)-1:
+		if len(words) != len(mv_time)-1:
 			ext = '_'.join(str(x) for x in words)
 			mv_dir = f1[:-4].split("/")[0]
 			mv_name = f1[:-4].split("/")[-1]
 			new_f1 = "{}/cuts/{}_{}.wav".format(mv_dir,mv_name,ext)
 			if not os.path.exists(new_f1):
 				mute_list = ""
-				for i, t in enumerate(mv_w[:-1]):
-					if not i in words:
+				for i, t in enumerate(mv_time[:-1]):
+					if not str(i) in words:
 						if len(mute_list) > 0:
 							mute_list += ", "
-						mute_list += "volume=enable='between(t,{},{})':volume=0".format(t,mv_w[i+1])
+						if i == 0:
+							t = 0
+						mute_list += "volume=enable='between(t,{},{})':volume=0".format(t,mv_time[i+1])
 
 				subprocess.call(['ffmpeg', '-i', f1, '-af', mute_list, '-c:v', 'copy', new_f1, '-y', '-hide_banner'])
-		print(new_f1)
+			print(new_f1)
+			f1 = new_f1
 
-		x1, x2 = get_audio_cnn(new_f1, f2)
+		x1, x2 = get_audio_cnn(f1, f2)
 		x1, x2 = torch.from_numpy(x1).unsqueeze(0).to(device).float(), torch.from_numpy(x2).unsqueeze(0).to(device).float()
 
 		y_hat = model(x1, x2)
 
 		score = str(int(y_hat.data.item()*100))
 		conn.send(score.encode('UTF-8'))
+
+		conn.recv(1024)
+
+		exp = [[],[]]
+		# user_words = ["hi", "everyone", "nice", "congratulations", "what", "did", "to", "glasses"]
+		user_sent = "Come to the nation Harry I come believe you solved eat".lower()
+		user_words = user_sent.split()
+		# user_idx = 0
+		for i, w in enumerate(mv_words):
+			if not str(i) in words:
+				exp[0].append(-1)
+			elif w in user_words:
+				exp[0].append(1)
+			else:
+				exp[0].append(0)
+
+		for i, w in enumerate(user_words):
+			if w in mv_words:
+				pos = mv_words.index(w)
+				if not str(pos) in words:
+					exp[1].append(-1)
+				else:
+					exp[1].append(1)
+			else:
+				exp[1].append(0)
+
+		exp = pickle.dumps(exp)
+		conn.send(exp)
 
 conn.close()

@@ -29,9 +29,13 @@ app.use('/score', upload.single("audio_data"), function(req, res){
   const quote = parseInt(req.body.quote,10)+1;
   const truth = character + quote+ ".wav";
   const words = req.body.words; 
-  const pythonProcess = spawn('python3',["./score.py", req.body.username, req.file.path, truth, words]);
+  const pythonProcess = spawn('python3',["./score.py", req.file.path, truth, words]);
   pythonProcess.stdout.on('data', function(data) {
-    res.send({username: data.toString()});  
+    var results = data.toString().replace(/^\s+|\s+$/g, '').split('/');
+    var score = results[0];
+    var phrase_1 = results[1].split('_');
+    var phrase_2 = results[2].split('_');
+    res.send({score: score, phrase_1: phrase_1, phrase_2: phrase_2}); 
   })
 });
 
@@ -46,4 +50,4 @@ const options = {
 };
 
 https.createServer(options, app).listen(8080);
-console.log(`listening on port ${port}!`);
+console.log(`listening on port ${port} and 8080!`);
