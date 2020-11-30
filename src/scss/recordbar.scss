@@ -2,29 +2,47 @@
 
 .record-bar {
   background-color: $ash-gray;
-  padding: 16px 16px 32px 16px;
+  padding: 16px;
 
   &--wrap {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0 16px 16px 16px;
   }
 
   &--player {
-    width: 500px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40vw;
     height: 32px;
+    margin: 8px;
   }
 
   &--round-button {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
+    font-family: Oswald;
+    line-height: 1;
     justify-content: center;
     background: white;
     border-width: 2px;
     border-style: solid;
     border-radius: 100%;
-    margin-right: 32px;
+    margin: 8px;
     
+    &.long {
+      width: 100px;
+      border-radius: 25px;
+      flex-direction: row;
+    }
+
+    &--label {
+      font-size: 14px;
+      margin-left: 8px;
+      display: inline;
+    }
 
     &.inactive {
       border-color: $primary;
@@ -42,13 +60,18 @@
       color: $ash-gray;
     }
 
+    &.disabled {
+      border-color: $ash-gray;
+      color: $ash-gray;
+      cursor: not-allowed;
+    }
   }
 }
 
 @media (max-width: 1024px){
   .record-bar {
     &--player {
-      width: 400px;
+      width: 40vw;
     }
   }
 }
@@ -56,7 +79,7 @@
 @media (max-width: 768px){
   .record-bar {
     &--player {
-      width: 60vw;
+      width: 20vw;
     }
   }
 }
