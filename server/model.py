@@ -161,11 +161,11 @@ with torch.no_grad():
 			if w in mv_words:
 				pos = mv_words.index(w)
 				if not str(pos) in words:
-					exp[1].append(-1)
+					exp[1].append([w,-1])
 				else:
-					exp[1].append(1)
+					exp[1].append([w,1])
 			else:
-				exp[1].append(0)
+				exp[1].append([w,0])
 
 		exp = pickle.dumps(exp)
 		conn.send(exp)

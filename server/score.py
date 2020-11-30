@@ -26,7 +26,8 @@ exp = pickle.loads(exp)
 
 s.close()
 
-results = [score, '_'.join([str(x) for x in exp[0]]), '_'.join([str(x) for x in exp[1]])]
+userwords = [i+':'+str(j) for (i,j) in exp[1]]
+results = [score, '_'.join([str(x) for x in exp[0]]), '_'.join(userwords)]
 results = '/'.join(results)
 
 print(results)

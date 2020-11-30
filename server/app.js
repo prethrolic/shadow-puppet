@@ -34,7 +34,11 @@ app.use('/score', upload.single("audio_data"), function(req, res){
     var results = data.toString().replace(/^\s+|\s+$/g, '').split('/');
     var score = results[0];
     var phrase_1 = results[1].split('_');
-    var phrase_2 = results[2].split('_');
+    var phrase_2 = []
+    var p2 = results[2].split('_')
+    for (var x in p2){
+      phrase_2.push(p2[x].split(':'))
+    }
     res.send({score: score, phrase_1: phrase_1, phrase_2: phrase_2}); 
   })
 });

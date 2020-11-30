@@ -68,7 +68,11 @@ class RecordBar extends React.Component {
                             fd, 
                 {headers: {'Content-Type': 'multipart/form-data'}})
                 .then(
-                  res => par.setState({score: res.data.score})
+                  res => par.setState({
+                    score: res.data.score,
+                    phrase_1: res.data.phrase_1,
+                    phrase_2: res.data.phrase_2
+                  })
                 );
             }
         };
