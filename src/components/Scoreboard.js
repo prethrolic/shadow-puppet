@@ -24,7 +24,7 @@ class Scoreboard extends React.Component {
   componentDidUpdate = (prevProps) => {
     if (prevProps !== this.props) {
       this.setState({
-        score: this.props.score || '--',
+        score: this.props.score,
         explanation: this.props.explanation || ''
       })
     }

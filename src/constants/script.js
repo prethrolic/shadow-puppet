@@ -20,7 +20,7 @@ export const MOVIE_SCRIPT = {
         video_url: 'https://drive.google.com/file/d/1_NYZkHOGrHJ00LLw8kePhSmQxG9m8hfA/preview',
       },
       {
-        script: ["Congratulations!", "I", "can't", "belive", "you", "solved", "it"],
+        script: ["Congratulations!", "I", "can't", "believe", "you", "solved", "it"],
         video_url: 'https://drive.google.com/file/d/1Ru_X215Kn_Wj0e1ffiYEi_AjJ4gdgX7D/preview',
       },
     ]
