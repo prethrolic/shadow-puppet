@@ -25,6 +25,7 @@ class RecordBar extends React.Component {
       selectedQuote: this.props.selectedQuote,
       phrase1: null,
       phrase2: null,
+      loading: false,
     }
 
     this.onSelectedWordChanged = this.onSelectedWordChanged.bind(this)
@@ -42,6 +43,7 @@ class RecordBar extends React.Component {
           score: null,
           evaluationEnabled: false,
           phrase1: null,
+          loading: false,
           phrase2: null,
         })
       }
@@ -65,7 +67,7 @@ class RecordBar extends React.Component {
     //    1. implement audio upload
     //    2. return evaluation and set states
     if (this.state.audio != null) {
-      console.log('evaluate')
+      this.setState({ loading: true })
       //load blob
       var xhr_get_audio = new XMLHttpRequest();
       const par = this;
@@ -89,7 +91,8 @@ class RecordBar extends React.Component {
                 res => par.setState({
                   score: res.data.score,
                   phrase1: res.data.phrase_1,
-                  phrase2: res.data.phrase_2
+                  phrase2: res.data.phrase_2,
+                  loading: false,
                 })
               );
           }
@@ -147,7 +150,12 @@ class RecordBar extends React.Component {
             />
           </div>
         </Col>
-        <Scoreboard score={this.state.score} phrase1={this.state.phrase1} phrase2={this.state.phrase2} />
+        <Scoreboard 
+          script={this.state.quote.script}
+          score={this.state.score} 
+          phrase1={this.state.phrase1} 
+          phrase2={this.state.phrase2}
+          loading={this.state.loading} />
       </Row>
     )
   }

@@ -25,9 +25,58 @@
     color: $main-bg;
   }
 
+  &--loader {
+    margin-top: 6px;
+    color: $primary-lighter;
+  }
+
   &--explanation-trigger {
     margin-left: 4px;
     color: $primary-lighter;
   }
 
+  &--explanation-sentence {
+    display: inline-block;
+    padding: 0;
+
+    .match {
+      color: $main-bg;
+    }
+
+    &.no-match {
+      color: $accent;
+      border-bottom: 2px solid $accent;
+    }
+
+    &.no-select {
+      color: $ash-gray;
+    }
+  }
+
+  &--explanation-caption {
+    display: inline-block;
+    font-size: 14px;
+    padding: 0;
+
+    .match {
+      color: $main-bg;
+    }
+
+    &.no-match {
+      color: $accent;
+    }
+
+    &.no-select {
+      color: $ash-gray;
+    }
+  }
+
+}
+
+@media (max-width: 768px) {
+  .scoreboard {
+    &--modal {
+      width: 90vw;
+    }
+  }
 }
