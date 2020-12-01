@@ -41,7 +41,7 @@ class ShadowPage extends React.Component {
   render() {
     return(
       <Container fluid className="App-wrap">
-        <Row style={{ height: "100vh"}}>
+        <Row>
           <Sidebar 
             name={this.state.character.name}
             icon={this.state.character.icon}
@@ -50,7 +50,7 @@ class ShadowPage extends React.Component {
             onQuoteChanged={this.onQuoteChanged}
             onCharacterChanged={this.onCharacterChanged}
           />
-          <Col>
+          <Col style={{ height: "fit-content"}}>
             <Row style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
               <VideoPlayer videoUrl={this.state.character.quote[this.state.selectedQuote].video_url} />
               <RecordBar quote={this.state.character.quote[this.state.selectedQuote]} selectedCharacter={this.state.selectedCharacter} selectedQuote={this.state.selectedQuote} />

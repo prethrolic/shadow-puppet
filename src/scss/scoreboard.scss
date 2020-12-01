@@ -1,0 +1,33 @@
+@import './_base.scss';
+
+.scoreboard {
+  &--wrap {
+    border-radius: 25px;
+    border: 2px solid $main-bg;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--title {
+    font-family: Oswald;
+    line-height: 1.5;
+    color: $main-bg;
+    font-size: 18px;
+    text-transform: uppercase;
+  }
+
+  &--score {
+    font-family: Oswald;
+    font-size: 32px;
+    color: $main-bg;
+  }
+
+  &--explanation-trigger {
+    margin-left: 4px;
+    color: $primary-lighter;
+  }
+
+}
