@@ -38,11 +38,11 @@ class Scoreboard extends React.Component {
   renderTooltip = (props) => {
     const { phrase1, phrase2 } = this.state
     let tooltipText = "explanation"
-    if (phrase1.includes(-1)) {
-      tooltipText = "Some of your word pronunciation are off. Click to see more."
+    if (phrase1.includes('0')) {
+      tooltipText = "It seems like you didn't say some of the words in the phrase. Click to see more."
     }
     else {
-      tooltipText = "You have spoke the words corretly. There might be a problem in accent or pronunciation"
+      tooltipText = "You have spoken all the words correctly. Now try to improve your accent and pronunciation!"
     }
 
     return (

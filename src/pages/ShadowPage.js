@@ -9,8 +9,8 @@ class ShadowPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      character: MOVIE_SCRIPT.character1,
-      selectedCharacter: 0,
+      character: MOVIE_SCRIPT.character2,
+      selectedCharacter: 1,
       selectedQuote: 0,
     }
 
