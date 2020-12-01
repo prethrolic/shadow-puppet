@@ -13,28 +13,44 @@ class Scoreboard extends React.Component {
     this.state = {
       score: this.props.score || '--',
       explanation: this.props.explanation || '',
+      phrase1: this.props.phrase1 || [1],
+      phrase2: this.props.phrase1 || [],
       loading: this.props.loading || false,
       showExplanation: false,
     }
 
     this.showExplanation = this.showExplanation.bind(this)
     this.hideExplanation = this.hideExplanation.bind(this)
+    this.renderTooltip = this.renderTooltip.bind(this)
   }
 
   componentDidUpdate = (prevProps) => {
     if (prevProps !== this.props) {
       this.setState({
         score: this.props.score,
-        explanation: this.props.explanation || ''
+        phrase1: this.props.phrase1 || [1],
+        phrase2: this.props.phrase1 || [],
+        showExplanation: false,
       })
     }
   }
 
-  renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      Some of your word pronunciation are off. Click to see more.
-    </Tooltip>
-  );
+  renderTooltip = (props) => {
+    const { phrase1, phrase2 } = this.state
+    let tooltipText = "explanation"
+    if (phrase1.includes(-1)) {
+      tooltipText = "Some of your word pronunciation are off. Click to see more."
+    }
+    else {
+      tooltipText = "You have spoke the words corretly. There might be a problem in accent or pronunciation"
+    }
+
+    return (
+      <Tooltip id="button-tooltip" {...props}>
+        { tooltipText }
+      </Tooltip>
+    )
+};
 
   showExplanation = () => {
     this.setState({ showExplanation: true })

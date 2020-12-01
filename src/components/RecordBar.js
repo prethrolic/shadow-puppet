@@ -23,6 +23,8 @@ class RecordBar extends React.Component {
       evaluationEnabled: false,
       selectedCharacter: this.props.selectedCharacter,
       selectedQuote: this.props.selectedQuote,
+      phrase1: null,
+      phrase2: null,
     }
 
     this.onSelectedWordChanged = this.onSelectedWordChanged.bind(this)
@@ -34,10 +36,13 @@ class RecordBar extends React.Component {
     if (prevProps !== this.props) {
       if (prevProps.quote !== this.props.quote) {
         this.setState({
+          audio: null,
           quote: this.props.quote,
           selectedIndices: this.props.quote.script.map((_, idx) => idx),
           score: null,
           evaluationEnabled: false,
+          phrase1: null,
+          phrase2: null,
         })
       }
       else {
@@ -59,36 +64,37 @@ class RecordBar extends React.Component {
     // TODO: 
     //    1. implement audio upload
     //    2. return evaluation and set states
-    if (this.state.audio !== null) {
-        //load blob
-        var xhr_get_audio = new XMLHttpRequest();
-        const par = this;
-        xhr_get_audio.open('GET', url, true);
-        xhr_get_audio.responseType = 'blob';
-        xhr_get_audio.onload = function(e) {
-            if (this.status === 200) {
-                var blob = this.response;
-                //send the blob to the server
-                var filename = "filename0" 
-                var fd = new FormData();
-                var indices = par.state.selectedIndices.join("-");
-                fd.append("words", indices);
-                fd.append("audio_data", blob, filename);
-                fd.append("character", par.props.selectedCharacter);
-                fd.append("quote", par.props.selectedQuote);
-                axios.post('https://143.248.150.127:8080/score', 
-                            fd, 
-                {headers: {'Content-Type': 'multipart/form-data'}})
-                .then(
-                  res => par.setState({
-                    score: res.data.score,
-                    phrase_1: res.data.phrase_1,
-                    phrase_2: res.data.phrase_2
-                  })
-                );
-            }
-        };
-        xhr_get_audio.send();
+    if (this.state.audio != null) {
+      console.log('evaluate')
+      //load blob
+      var xhr_get_audio = new XMLHttpRequest();
+      const par = this;
+      xhr_get_audio.open('GET', url, true);
+      xhr_get_audio.responseType = 'blob';
+      xhr_get_audio.onload = function(e) {
+          if (this.status === 200) {
+              var blob = this.response;
+              //send the blob to the server
+              var filename = "filename0" 
+              var fd = new FormData();
+              var indices = par.state.selectedIndices.join("-");
+              fd.append("words", indices);
+              fd.append("audio_data", blob, filename);
+              fd.append("character", par.props.selectedCharacter);
+              fd.append("quote", par.props.selectedQuote);
+              axios.post('https://143.248.150.127:8080/score', 
+                          fd, 
+              {headers: {'Content-Type': 'multipart/form-data'}})
+              .then(
+                res => par.setState({
+                  score: res.data.score,
+                  phrase1: res.data.phrase_1,
+                  phrase2: res.data.phrase_2
+                })
+              );
+          }
+      };
+      xhr_get_audio.send();
     }
   }
 
@@ -104,6 +110,7 @@ class RecordBar extends React.Component {
           <div className="justify-content-md-center">
             <ReactMediaRecorder
               audio
+              onStop = {mediaBlobUrl => this.setState({audio: mediaBlobUrl}) }
               render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
                 <div className="record-bar--wrap">
                   {
@@ -128,11 +135,11 @@ class RecordBar extends React.Component {
                     </Button>
                   }
                   <Button
-                    bsPrefix={"record-bar--round-button long " +  (this.state.audio !== null? "inactive" : "disabled")}
+                    bsPrefix={"record-bar--round-button long " +  (this.state.audio != null? "inactive" : "disabled")}
                     onClick={() => {this.getEvaluation(mediaBlobUrl)}}
                   >
                       <FontAwesomeIcon icon="spell-check" size="lg" />
-                      <div className="record-bar--round-button--label">{this.state.score}</div>
+                      <div className="record-bar--round-button--label">evaluate</div>
                   </Button>
                   <audio className="record-bar--player" src={mediaBlobUrl} controls />
                 </div>
@@ -140,7 +147,7 @@ class RecordBar extends React.Component {
             />
           </div>
         </Col>
-        <Scoreboard score={this.state.score} />
+        <Scoreboard score={this.state.score} phrase1={this.state.phrase1} phrase2={this.state.phrase2} />
       </Row>
     )
   }
