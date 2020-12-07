@@ -192,66 +192,73 @@ with torch.no_grad():
 		# user_words = ["hi", "everyone", "nice", "congratulations", "what", "did", "to", "glasses"]
 		# user_sent = "Come to the nation Harry I come believe you solved eat".lower()
 		user_sent, timestamp = speech_to_text(f2)
-		user_words = user_sent.split()
-		f2 = f2[:-4]+"_wav.wav"
-		fin = timestamp[-1][-1]
-		aud_len = get_length(f2)
-		words_list = [pair.strip().split(',')[0].lower() for idx, pair in enumerate(mv_w) if str(idx) in words]
-		if len(words) != len(mv_time)-1:
-			ext = '_'.join(str(x) for x in words)
-			upload_dir = f2[:-4].split("/")[0]
-			file_name = f2[:-4].split("/")[-1]
-			new_f2 = "{}/{}_{}.wav".format(upload_dir,file_name,ext)
-			print(new_f2)
-			if not os.path.exists(new_f2):
-				mute_list = ""
-				for i, w in enumerate(timestamp):
-					if not w[0] in words_list and not "<" in w[0]:
-						if len(mute_list) > 0:
-							mute_list += ", "
-						ts, te = w[1]/fin*aud_len, w[2]/fin*aud_len
-						mute_list += "volume=enable='between(t,{},{})':volume=0".format(ts, te)
+		if type(user_sent) == type((0,0)):
+			conn.send("00".encode('UTF-8'))
+			conn.recv(1024)
+			exp = pickle.dumps(exp)
+			conn.send(exp)
 
-				subprocess.call(['ffmpeg', '-i', f2, '-af', mute_list, '-c:v', 'copy', new_f2, '-y', '-hide_banner'])
-			f2 = new_f2
+		else:
+			user_words = user_sent.split()
+			f2 = f2[:-4]+"_wav.wav"
+			fin = timestamp[-1][-1]
+			aud_len = get_length(f2)
+			words_list = [pair.strip().split(',')[0].lower() for idx, pair in enumerate(mv_w) if str(idx) in words]
+			if len(words) != len(mv_time)-1:
+				ext = '_'.join(str(x) for x in words)
+				upload_dir = f2[:-4].split("/")[0]
+				file_name = f2[:-4].split("/")[-1]
+				new_f2 = "{}/{}_{}.wav".format(upload_dir,file_name,ext)
+				print(new_f2)
+				if not os.path.exists(new_f2):
+					mute_list = ""
+					for i, w in enumerate(timestamp):
+						if not w[0] in words_list and not "<" in w[0]:
+							if len(mute_list) > 0:
+								mute_list += ", "
+							ts, te = w[1]/fin*aud_len, w[2]/fin*aud_len
+							mute_list += "volume=enable='between(t,{},{})':volume=0".format(ts, te)
 
-		print(timestamp)
-		print(user_words)
-		print(words_list)
+					subprocess.call(['ffmpeg', '-i', f2, '-af', mute_list, '-c:v', 'copy', new_f2, '-y', '-hide_banner'])
+				f2 = new_f2
 
-		x1, x2 = get_audio_cnn(f1, f2)
-		x1, x2 = torch.from_numpy(x1).unsqueeze(0).to(device).float(), torch.from_numpy(x2).unsqueeze(0).to(device).float()
+			print(timestamp)
+			print(user_words)
+			print(words_list)
 
-		y_hat = model(x1, x2)
-		sc1 = int(y_hat.data.item()*100*0.4)
-		sc2 = int(getIoU(words_list, user_words)*100*0.6)
-		print(sc1, sc2)
-		score = max(min(sc1+sc2,100),0)
-		score = str(score).zfill(2)
-		conn.send(score.encode('UTF-8'))
+			x1, x2 = get_audio_cnn(f1, f2)
+			x1, x2 = torch.from_numpy(x1).unsqueeze(0).to(device).float(), torch.from_numpy(x2).unsqueeze(0).to(device).float()
 
-		conn.recv(1024)
+			y_hat = model(x1, x2)
+			sc1 = int(y_hat.data.item()*100*0.4)
+			sc2 = int(getIoU(words_list, user_words)*100*0.6)
+			print(sc1, sc2)
+			score = max(min(sc1+sc2,100),0)
+			score = str(score).zfill(2)
+			conn.send(score.encode('UTF-8'))
 
-		# user_idx = 0
-		for i, w in enumerate(mv_words):
-			if not str(i) in words:
-				exp[0].append(-1)
-			elif w in user_words:
-				exp[0].append(1)
-			else:
-				exp[0].append(0)
+			conn.recv(1024)
 
-		for i, w in enumerate(user_words):
-			if w in mv_words:
-				pos = mv_words.index(w)
-				if not str(pos) in words:
-					exp[1].append([w,-1])
+			# user_idx = 0
+			for i, w in enumerate(mv_words):
+				if not str(i) in words:
+					exp[0].append(-1)
+				elif w in user_words:
+					exp[0].append(1)
 				else:
-					exp[1].append([w,1])
-			else:
-				exp[1].append([w,0])
+					exp[0].append(0)
 
-		exp = pickle.dumps(exp)
-		conn.send(exp)
+			for i, w in enumerate(user_words):
+				if w in mv_words:
+					pos = mv_words.index(w)
+					if not str(pos) in words:
+						exp[1].append([w,-1])
+					else:
+						exp[1].append([w,1])
+				else:
+					exp[1].append([w,0])
+
+			exp = pickle.dumps(exp)
+			conn.send(exp)
 
 conn.close()
