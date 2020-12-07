@@ -41,7 +41,7 @@ class Scoreboard extends React.Component {
     const { phrase1 } = this.state
     let tooltipText = "explanation"
 
-    if (phrase1.length < 1 || phrase1 === undefined) return(<div /> )
+    if (phrase1.length < 1 || phrase1 === undefined || phrase1 === null) return(<div /> )
 
     if (phrase1.includes('0')) {
       tooltipText = "It seems like you didn't say some of the words in the phrase. Click to see more."
@@ -59,7 +59,7 @@ class Scoreboard extends React.Component {
 
   showExplanation = () => {
     const { phrase1 } = this.state
-    if (phrase1 === null || !phrase1.includes('0')) return
+    if (phrase1 === null || phrase1 === undefined || !phrase1.includes('0')) return
     this.setState({ showExplanation: true })
   }
 
@@ -152,6 +152,16 @@ class Scoreboard extends React.Component {
                 )
               })
             }
+          </div>
+
+          <div classname="scoreboard--explanation-general-container">
+            <div className="scoreboard--explanation-general">
+            <u>How is my score calculated?</u>
+            <ul>
+              <li>60% depends on whether you said all the words in the quote</li>
+              <li>40% depends on how similar your accent is to the character</li>
+            </ul>
+            </div>
           </div>
         </Modal.Body>
       </Modal>

@@ -23,7 +23,7 @@ class RecordBar extends React.Component {
       evaluationEnabled: false,
       selectedCharacter: this.props.selectedCharacter,
       selectedQuote: this.props.selectedQuote,
-      phrase1: this.props.phrase1,
+      phrase1: null,
       phrase2: null,
       loading: false,
     }
