@@ -1,5 +1,11 @@
 import React from 'react'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import '../scss/wordselector.scss'
+
+library.add(faQuestionCircle)
 
 class WordSelector extends React.Component {  
   constructor(props) {
@@ -31,6 +37,14 @@ class WordSelector extends React.Component {
     this.props.onSelectedWordChanged(selectedIndices)
   }
 
+  renderTooltip = (props) => {
+    return (
+      <Tooltip id="button-tooltip" {...props}>
+        You will be scored only for the words that are selected. We will cut out the audio to only contain the selected words
+      </Tooltip>
+    )
+  };
+
   render() {
     let selectedIndices = this.state.selectedIndices
 
@@ -48,6 +62,16 @@ class WordSelector extends React.Component {
             )
           })
         }
+        <OverlayTrigger
+            placement="top"
+            delay={{ show: 0, hide: 400 }}
+            overlay={this.renderTooltip}
+          >
+            <FontAwesomeIcon className="word-selector--questionmark" icon="question-circle" onClick={this.showExplanation} />
+          </OverlayTrigger>
+        <div>
+          
+        </div>
       </div>
     )
   }

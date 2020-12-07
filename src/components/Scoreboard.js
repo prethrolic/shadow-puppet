@@ -59,7 +59,7 @@ class Scoreboard extends React.Component {
 
   showExplanation = () => {
     const { phrase1 } = this.state
-    if (phrase1 === null) return
+    if (phrase1 === null || phrase1 === undefined || phrase1.length < 1) return
     this.setState({ showExplanation: true })
   }
 

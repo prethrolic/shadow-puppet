@@ -28,6 +28,11 @@
     }
 
   }
+
+  &--questionmark {
+    margin-left: 4px;
+    color: $primary-lighter;
+  }
 }
 
 @media (max-width: 768px) {

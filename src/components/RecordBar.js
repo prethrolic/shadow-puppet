@@ -58,8 +58,6 @@ class RecordBar extends React.Component {
 
   onSelectedWordChanged = (selectedIndices) => {
     this.setState({ selectedIndices })
-    // TODO: get new evaluation every time the selected word change. probably should be done after we did the evaluation thingy
-    // this.getEvaluation()
   }
 
   getEvaluation = (url) => {
