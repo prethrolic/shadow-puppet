@@ -49,38 +49,57 @@ def spec_to_image(spec, eps=1e-6):
 	spec_scaled = spec_scaled.astype(np.uint8)
 	return spec_scaled
 
-def speech_to_text(audio_file: str)->str:
-    ogg = ffmpeg.input(audio_file)
-    newname = audio_file[:-4]+"_wav.wav"
-    fout = ffmpeg.output (ogg, newname)
-    fout.global_args("-hide_banner")
-    fout.global_args("-loglevel", "warning")
+def get_length(audio):
+	result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', audio], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	return float(result.stdout)
 
-    fout.run()
-    r = sr.Recognizer()
-    with sr.AudioFile(newname) as src:
-        audio = r.record(src)
-    
-    def fallback(audio):
-        try:
-            fallback_pred = r.recognize_sphinx(audio, language="en-US")
-        except sr.UnknownValueError:
-            fallback_pred = ""
-        except sr.RequestError as e:
-            fallback_pred = ""
-        return fallback_pred
-        
-    # recognize speech using Google Speech Recognition
-    try:
-        # for testing purposes, we're just using the default API key
-        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-        # instead of `r.recognize_google(audio)`
-        google_pred = r.recognize_google(audio, language="en-UK")
-        return google_pred
-    except sr.UnknownValueError:
-        return fallback(audio)
-    except sr.RequestError as e:
-        return fallback(audio)
+def speech_to_text(audio_file: str)->str:
+	ogg = ffmpeg.input(audio_file)
+	newname = audio_file[:-4]+"_wav.wav"
+	fout = ffmpeg.output (ogg, newname)
+	fout.global_args("-hide_banner")
+	fout.global_args("-loglevel", "warning")
+
+	fout.run()
+	r = sr.Recognizer()
+	with sr.AudioFile(newname) as src:
+		audio = r.record(src)
+	
+	def fallback(audio):
+		try:
+			fallback_pred = r.recognize_sphinx(audio, language="en-GB", show_all=True)
+			timestamp = [(seg.word, seg.start_frame, seg.end_frame) for seg in fallback_pred.seg()]
+		except sr.UnknownValueError:
+			fallback_pred = ""
+			timestamp = []
+		except sr.RequestError as e:
+			fallback_pred = ""
+			timestamp = []
+		return fallback_pred, timestamp
+		
+	# recognize speech using Google Speech Recognition
+	try:
+		# for testing purposes, we're just using the default API key
+		# to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
+		# instead of `r.recognize_google(audio)`
+		google_pred = r.recognize_google(audio, language="en-UK")
+		fallback_pred = r.recognize_sphinx(audio, language="en-US", show_all=True)
+		timestamp = [(seg.word, seg.start_frame, seg.end_frame) for seg in fallback_pred.seg()]
+		return google_pred, timestamp
+	except sr.UnknownValueError:
+		print("ERROR!")
+		return fallback(audio), []
+	except sr.RequestError as e:
+		print("ERROR2")
+		return fallback(audio), []
+
+def getIoU(w1, w2):
+	w1 = [w.lower() for w in w1]
+	w2 = [w.lower() for w in w2]
+	union = len(set(w1+w2))
+	inter = len([w for w in w2 if w in w1])
+	return max(float(inter)/len(w1), 1.0)
+
 
 class ConvNet(nn.Module):
 	def __init__(self):
@@ -169,22 +188,50 @@ with torch.no_grad():
 			print(new_f1)
 			f1 = new_f1
 
+		exp = [[],[]]
+		# user_words = ["hi", "everyone", "nice", "congratulations", "what", "did", "to", "glasses"]
+		# user_sent = "Come to the nation Harry I come believe you solved eat".lower()
+		user_sent, timestamp = speech_to_text(f2)
+		user_words = user_sent.split()
+		f2 = f2[:-4]+"_wav.wav"
+		fin = timestamp[-1][-1]
+		aud_len = get_length(f2)
+		words_list = [pair.strip().split(',')[0].lower() for idx, pair in enumerate(mv_w) if str(idx) in words]
+		if len(words) != len(mv_time)-1:
+			ext = '_'.join(str(x) for x in words)
+			upload_dir = f2[:-4].split("/")[0]
+			file_name = f2[:-4].split("/")[-1]
+			new_f2 = "{}/{}_{}.wav".format(upload_dir,file_name,ext)
+			print(new_f2)
+			if not os.path.exists(new_f2):
+				mute_list = ""
+				for i, w in enumerate(timestamp):
+					if not w[0] in words_list and not "<" in w[0]:
+						if len(mute_list) > 0:
+							mute_list += ", "
+						ts, te = w[1]/fin*aud_len, w[2]/fin*aud_len
+						mute_list += "volume=enable='between(t,{},{})':volume=0".format(ts, te)
+
+				subprocess.call(['ffmpeg', '-i', f2, '-af', mute_list, '-c:v', 'copy', new_f2, '-y', '-hide_banner'])
+			f2 = new_f2
+
+		print(timestamp)
+		print(user_words)
+		print(words_list)
+
 		x1, x2 = get_audio_cnn(f1, f2)
 		x1, x2 = torch.from_numpy(x1).unsqueeze(0).to(device).float(), torch.from_numpy(x2).unsqueeze(0).to(device).float()
 
 		y_hat = model(x1, x2)
-
-		score = max(min(int(y_hat.data.item()*100),100),0)
+		sc1 = int(y_hat.data.item()*100*0.4)
+		sc2 = int(getIoU(words_list, user_words)*100*0.6)
+		print(sc1, sc2)
+		score = max(min(sc1+sc2,100),0)
 		score = str(score).zfill(2)
 		conn.send(score.encode('UTF-8'))
 
 		conn.recv(1024)
 
-		exp = [[],[]]
-		# user_words = ["hi", "everyone", "nice", "congratulations", "what", "did", "to", "glasses"]
-		user_sent = "Come to the nation Harry I come believe you solved eat".lower()
-		user_sent = speech_to_text(f2) 
-		user_words = user_sent.split()
 		# user_idx = 0
 		for i, w in enumerate(mv_words):
 			if not str(i) in words:
