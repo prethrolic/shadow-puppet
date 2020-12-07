@@ -87,7 +87,7 @@ def speech_to_text(audio_file: str)->str:
 		timestamp = [(seg.word, seg.start_frame, seg.end_frame) for seg in fallback_pred.seg()]
 		return google_pred, timestamp
 	except sr.UnknownValueError:
-		print("ERROR!")
+		print("ERROR1")
 		return fallback(audio), []
 	except sr.RequestError as e:
 		print("ERROR2")
@@ -98,7 +98,7 @@ def getIoU(w1, w2):
 	w2 = [w.lower() for w in w2]
 	union = len(set(w1+w2))
 	inter = len([w for w in w2 if w in w1])
-	return max(float(inter)/len(w1), 1.0)
+	return min(float(inter)/len(w1), 1.0)
 
 
 class ConvNet(nn.Module):
@@ -166,7 +166,7 @@ with torch.no_grad():
 		mv_csv = f1[:-4]+'.csv'
 		f = open(mv_csv, 'r')
 		mv_w = f.readlines()
-		mv_words = [pair.strip().split(',')[0] for pair in mv_w][:-1]
+		mv_words = [pair.strip().split(',')[0].lower() for pair in mv_w][:-1]
 		mv_time = [float(pair.strip().split(',')[-1]) for pair in mv_w]
 
 		if len(words) != len(mv_time)-1:

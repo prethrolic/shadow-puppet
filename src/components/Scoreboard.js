@@ -43,7 +43,7 @@ class Scoreboard extends React.Component {
 
     if (phrase1.length < 1 || phrase1 === undefined) return(<div /> )
 
-    if (phrase1.includes('0')) {
+    if (phrase1.includes('0') || phrase1[0].length == 0) {
       tooltipText = "It seems like you didn't say some of the words in the phrase. Click to see more."
     }
     else {
