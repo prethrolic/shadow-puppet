@@ -23,7 +23,7 @@ class RecordBar extends React.Component {
       evaluationEnabled: false,
       selectedCharacter: this.props.selectedCharacter,
       selectedQuote: this.props.selectedQuote,
-      phrase1: null,
+      phrase1: this.props.phrase1,
       phrase2: null,
       loading: false,
     }
@@ -90,7 +90,7 @@ class RecordBar extends React.Component {
               .then(
                 res => par.setState({
                   score: res.data.score,
-                  phrase1: res.data.phrase_1,
+                  //phrase1: res.data.phrase_1,
                   phrase2: res.data.phrase_2,
                   loading: false,
                 })
