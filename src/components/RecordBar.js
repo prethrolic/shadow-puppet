@@ -63,9 +63,6 @@ class RecordBar extends React.Component {
   }
 
   getEvaluation = (url) => {
-    // TODO: 
-    //    1. implement audio upload
-    //    2. return evaluation and set states
     if (this.state.audio != null) {
       this.setState({ loading: true })
       //load blob
@@ -90,7 +87,7 @@ class RecordBar extends React.Component {
               .then(
                 res => par.setState({
                   score: res.data.score,
-                  //phrase1: res.data.phrase_1,
+                  phrase1: res.data.phrase_1,
                   phrase2: res.data.phrase_2,
                   loading: false,
                 })

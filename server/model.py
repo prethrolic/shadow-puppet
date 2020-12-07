@@ -9,6 +9,8 @@ import sys
 import subprocess
 import pickle
 import warnings
+import speech_recognition as sr
+import ffmpeg
 warnings.filterwarnings('ignore')
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -46,6 +48,39 @@ def spec_to_image(spec, eps=1e-6):
 	spec_scaled = 255 * (spec_norm - spec_min) / (spec_max - spec_min)
 	spec_scaled = spec_scaled.astype(np.uint8)
 	return spec_scaled
+
+def speech_to_text(audio_file: str)->str:
+    ogg = ffmpeg.input(audio_file)
+    newname = audio_file[:-4]+"_wav.wav"
+    fout = ffmpeg.output (ogg, newname)
+    fout.global_args("-hide_banner")
+    fout.global_args("-loglevel", "warning")
+
+    fout.run()
+    r = sr.Recognizer()
+    with sr.AudioFile(newname) as src:
+        audio = r.record(src)
+    
+    def fallback(audio):
+        try:
+            fallback_pred = r.recognize_sphinx(audio, language="en-US")
+        except sr.UnknownValueError:
+            fallback_pred = ""
+        except sr.RequestError as e:
+            fallback_pred = ""
+        return fallback_pred
+        
+    # recognize speech using Google Speech Recognition
+    try:
+        # for testing purposes, we're just using the default API key
+        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
+        # instead of `r.recognize_google(audio)`
+        google_pred = r.recognize_google(audio, language="en-UK")
+        return google_pred
+    except sr.UnknownValueError:
+        return fallback(audio)
+    except sr.RequestError as e:
+        return fallback(audio)
 
 class ConvNet(nn.Module):
 	def __init__(self):
@@ -139,7 +174,8 @@ with torch.no_grad():
 
 		y_hat = model(x1, x2)
 
-		score = str(int(y_hat.data.item()*100))
+		score = max(min(int(y_hat.data.item()*100),100),0)
+		score = str(score).zfill(2)
 		conn.send(score.encode('UTF-8'))
 
 		conn.recv(1024)
@@ -147,6 +183,7 @@ with torch.no_grad():
 		exp = [[],[]]
 		# user_words = ["hi", "everyone", "nice", "congratulations", "what", "did", "to", "glasses"]
 		user_sent = "Come to the nation Harry I come believe you solved eat".lower()
+		user_sent = speech_to_text(f2) 
 		user_words = user_sent.split()
 		# user_idx = 0
 		for i, w in enumerate(mv_words):
